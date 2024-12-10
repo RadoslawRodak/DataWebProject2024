@@ -1,39 +1,84 @@
-var express = require('express')
-var app = express()
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
-var detailRequests = 0;
-var serverRequests = 0;
+// Initialize Express app
+const app = express();
+const port = 3004;
 
-app.use((req, res, next) => {
-    console.log("MIDDLEWARE")
-    next()
-})
-
-var updateServeReq = function (req, res, next) {
-    console.log("Website accessed", ++serverRequests, "times")
-    next()
-}
+// Middleware to parse form data
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
 
-app.get("/", [updateServeReq], (req, res) => {
-    console.log("GET")
-    res.sendFile(__dirname+"/pages/home.html")
-})
+// Home Page (GET /)
+app.get('/', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Home Page</title>
+    </head>
+    <body>
+      <h1>G00417413</h1>
+      <nav>
+        <ul>
+          <li><a href="/students">Students</a></li>
+          <li><a href="/grades">Grades</a></li>
+        </ul>
+      </nav>
+    </body>
+    </html>
+  `);
+});
 
-app.get("/about", [updateServeReq], (req, res) => {
-    console.log("ABOUT")
-    res.sendFile(__dirname+"/pages/about.html")
-})
+// Students Page (GET /students)
+app.get('/students', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Students Page</title>
+    </head>
+    <body>
+      <h1>Students Page</h1>
+      <nav>
+        <a href="/">Back to Home</a>
+      </nav>
+      <p>List of students will be shown here.</p>
+    </body>
+    </html>
+  `);
+});
 
-app.get("/details", [updateServeReq], (req, res) => {
-    console.log("DETAILS")
-    var d = new Date()
-    console.log("/details request number:", ++detailRequests, "from:", req.hostname, "at:", d.getHours(), ":", d.getMinutes(), ":", d.getSeconds())
-    res.redirect("/")
-})
+// Grades Page (GET /grades)
+app.get('/grades', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Grades Page</title>
+    </head>
+    <body>
+      <h1>Grades Page</h1>
+      <nav>
+        <a href="/">Back to Home</a>
+      </nav>
+      <p>Grades data will be shown here.</p>
+    </body>
+    </html>
+  `);
+});
 
-app.listen(3004, () => {
-    console.log("Application listening on port 3004")
-})
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
